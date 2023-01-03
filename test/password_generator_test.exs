@@ -1,6 +1,5 @@
 defmodule PasswordGeneratorTest do
   use ExUnit.Case
-  doctest PasswordGenerator
 
   setup do
     options = %{
@@ -47,7 +46,7 @@ defmodule PasswordGeneratorTest do
 
     {:ok, result} = PasswordGenerator.generate(length_option)
 
-    assert expected_val = String.length(result)
+    assert expected_val == String.length(result)
   end
 
   test "returns a lowercase string just with the length", %{options_type: options} do
@@ -82,5 +81,21 @@ defmodule PasswordGeneratorTest do
     options = %{"length" => "5", "numbers" => "true", "invalid" => "true"}
 
     assert {:error, _error} = PasswordGenerator.generate(options)
+  end
+
+  test "returns string uppercase", %{options_type: options} do
+    options_with_uppercase = %{
+      "length" => "10",
+      "numbers" => "false",
+      "uppercase" => "true",
+      "symbols" => "false"
+    }
+
+    {:ok, result} = PasswordGenerator.generate(options_with_uppercase)
+
+    assert String.contains?(result, options.uppercase)
+
+    refute String.contains?(result, options.numbers)
+    refute String.contains?(result, options.symbols)
   end
 end
